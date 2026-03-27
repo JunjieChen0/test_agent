@@ -9,8 +9,8 @@ from typing import Any
 import httpx
 
 LLM_API_KEY = (os.environ.get("OPENAI_API_KEY") or os.environ.get("LLM_API_KEY") or "").strip()
-LLM_BASE_URL = (os.environ.get("LLM_BASE_URL") or "https://api.openai.com/v1").rstrip("/")
-LLM_MODEL = (os.environ.get("LLM_MODEL") or "gpt-4o-mini").strip()
+LLM_BASE_URL = (os.environ.get("LLM_BASE_URL") or "https://api.deepseek.com/v1").rstrip("/")
+LLM_MODEL = (os.environ.get("LLM_MODEL") or "deepseek-chat").strip()
 
 SYSTEM_PROMPT = """你是 Cloud Agent 服务端助手。用户会给出当前任务目标、会话 id、工作区路径说明；可能附带截图（图片 URL 或 base64）。
 你必须只输出一个 JSON 对象，不要 markdown 代码块，不要其它文字。JSON 结构如下：

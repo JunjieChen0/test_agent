@@ -16,6 +16,27 @@
 
 扩展侧：`njust-ai-cj.cloudAgent.serverUrl` 填 **https 公网地址**（无尾部 `/`）。
 
+### 使用 DeepSeek
+
+DeepSeek 提供 OpenAI 兼容接口，在平台创建的 **API Key** 可直接使用：
+
+| 变量 | 建议值 |
+|------|--------|
+| `LLM_API_KEY` | DeepSeek 控制台里的 API Key |
+| `LLM_BASE_URL` | `https://api.deepseek.com/v1` |
+| `LLM_MODEL` | `deepseek-chat`（对话）或 `deepseek-reasoner`（需按官方说明选用） |
+
+PowerShell 示例：
+
+```powershell
+$env:LLM_API_KEY = "sk-..."           # DeepSeek 的 key
+$env:LLM_BASE_URL = "https://api.deepseek.com/v1"
+$env:LLM_MODEL = "deepseek-chat"
+python -m app.main
+```
+
+若请求因 `response_format` 报错，可尝试：`$env:LLM_USE_JSON_OBJECT = "0"`（以官方当前文档为准）。
+
 ## 本地运行（Python）
 
 ```bash
