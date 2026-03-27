@@ -9,6 +9,7 @@ Cloud Agent HTTP 服务：GET /health、POST /v1/run
 
 from __future__ import annotations
 
+import logging
 import os
 from datetime import datetime, timezone
 from typing import Annotated, Any
@@ -24,6 +25,8 @@ PORT = int(os.environ.get("PORT", str(DEFAULT_PORT)))
 HOST = os.environ.get("HOST", "127.0.0.1").strip()
 EXPECTED_API_KEY = (os.environ.get("CLOUD_AGENT_MOCK_API_KEY") or "").strip()
 
+_log = logging.getLogger("test_agent.auth")
+
 app = FastAPI(title="Cloud Agent", version="1.0.0")
 
 
@@ -32,8 +35,16 @@ def verify_agent_headers(
     x_api_key: Annotated[str | None, Header(alias="X-API-Key")] = None,
 ) -> None:
     if not x_device_token or not str(x_device_token).strip():
+        _log.warning("401 missing X-Device-Token (client sent no or empty header)")
         raise HTTPException(status_code=401, detail={"error": "missing X-Device-Token"})
     if EXPECTED_API_KEY and x_api_key != EXPECTED_API_KEY:
+        if x_api_key is None or str(x_api_key).strip() == "":
+            _log.warning(
+                "401 missing X-API-Key while CLOUD_AGENT_MOCK_API_KEY is set on server "
+                "(extension must set njust-ai-cj.cloudAgent.apiKey or env CLOUD_AGENT_MOCK_API_KEY)"
+            )
+        else:
+            _log.warning("401 X-API-Key present but does not match server CLOUD_AGENT_MOCK_API_KEY (values not logged)")
         raise HTTPException(status_code=401, detail={"error": "invalid or missing X-API-Key"})
 
 
